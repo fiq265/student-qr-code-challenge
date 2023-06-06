@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Models\Student;
+use App\Models\FailedData;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
@@ -13,14 +14,39 @@ class StudentsImport implements ToModel, WithBatchInserts, WithChunkReading, Wit
 {
     public function model(array $row)
     {
-        $student_check = Student::where('name', $row['name'])->where('class', $row['class'])->where('level', $row['level'])->first();
+        $deleted = FailedData::query()->delete();
+        
+        $student_check = Student::where('name', $row['name'])
+                            ->where('class', $row['class'])
+                            ->where('level', $row['level'])
+                            ->where('parent_contact', $row['contact'])
+                            ->first();
 
         if(empty($student_check)){
-            return new Student([
+
+            if(!empty($row['name']) && !empty($row['class']) && !empty($row['level']) && !empty($row['contact'])){
+                return new Student([
+                    'name'              => $row['name'],
+                    'class'             => $row['class'], 
+                    'level'             => $row['level'],
+                    'parent_contact'    => $row['contact'],
+                ]);
+            }else{
+                return new FailedData([
+                    'name'              => $row['name'],
+                    'class'             => $row['class'], 
+                    'level'             => $row['level'],
+                    'parent_contact'    => $row['contact'],
+                    'reason'            => 'Missing Data.',
+                ]);
+            }
+        }else{
+            return new FailedData([
                 'name'              => $row['name'],
                 'class'             => $row['class'], 
                 'level'             => $row['level'],
                 'parent_contact'    => $row['contact'],
+                'reason'            => 'Duplicated data',
             ]);
         }
     }

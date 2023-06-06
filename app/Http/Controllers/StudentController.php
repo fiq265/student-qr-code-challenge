@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Student;
+use App\Models\FailedData;
 use Illuminate\Http\Request;
 use App\Imports\StudentsImport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -12,8 +13,9 @@ class StudentController extends Controller
     public function index()
     {
         $students = Student::all();
+        $failed_datas = FailedData::all();
 
-        return view('index', compact('students'));
+        return view('index', compact('students', 'failed_datas'));
     }
 
     public function store(Request $request)
@@ -28,7 +30,7 @@ class StudentController extends Controller
 
             return redirect('/')->with('success', 'Student data successfully imported.');
         }catch(Exception $e){
-            
+
             return redirect('/')->with('error', 'Unexpected error occured.');
         }
         

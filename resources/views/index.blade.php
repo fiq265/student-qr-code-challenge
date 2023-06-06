@@ -6,7 +6,6 @@
 
         <title>Student QR</title>
 
-        <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
 
@@ -63,6 +62,7 @@
                         <table class="table">
                           <thead>
                             <tr>
+                              <th scope="col">#</th>
                               <th scope="col">Name</th>
                               <th scope="col">Level</th>
                               <th scope="col">Class</th>
@@ -72,10 +72,39 @@
                           <tbody>
                             @foreach($students as $student)
                                 <tr>
+                                  <th>{{ $loop->iteration }}</th>
                                   <th scope="row">{{ $student->name }}</th>
                                   <td>{{ $student->level }}</td>
                                   <td>{{ $student->class }}</td>
                                   <td>{{ $student->parent_contact }}</td>
+                                </tr>
+                            @endforeach
+                          </tbody>
+                        </table>
+                    </div>
+
+                    <div class="mt-5">
+                        <h3>Duplicate or missing data</h3>
+                        <table class="table">
+                          <thead>
+                            <tr>
+                              <th scope="col">#</th>
+                              <th scope="col">Name</th>
+                              <th scope="col">Level</th>
+                              <th scope="col">Class</th>
+                              <th scope="col">Parents Contact</th>
+                              <th scope="col">Reason</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            @foreach($failed_datas as $data)
+                                <tr>
+                                  <th>{{ $loop->iteration }}</th>
+                                  <th scope="row">{{ $data->name }}</th>
+                                  <td>{{ $data->level }}</td>
+                                  <td>{{ $data->class }}</td>
+                                  <td>{{ $data->parent_contact }}</td>
+                                  <td>{{ $data->reason }}</td>
                                 </tr>
                             @endforeach
                           </tbody>
